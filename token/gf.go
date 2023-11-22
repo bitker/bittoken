@@ -21,6 +21,7 @@ func NewBittoken(cacheKey string) *Token {
 		MaxRefresh:       g.Cfg().MustGet(ctx, "BitToken.Refresh", "1000").Int(),
 		EncryptKey:       g.Cfg().MustGet(ctx, "BitToken.EncryptKey").Bytes(),
 		MultiLogin:       g.Cfg().MustGet(ctx, "BitToken.MultiLogin").Bool(),
+		TokenDelimiter:   "_",
 	}
 }
 
