@@ -12,7 +12,7 @@ import (
 )
 
 // 初始化参数
-func NewGtoken(keys string) *token {
+func NewBittoken(keys string) *token {
 	ctx := gctx.New()
 	return &token{
 		AuthExcludePaths: g.Cfg().MustGet(ctx, "BitToken.Exclude", "/login").Strings(),
