@@ -57,14 +57,13 @@ func (t *Token) Generate(ctx context.Context, userKey string, data interface{}) 
 	if t.MultiLogin {
 		// 支持多端重复登录，返回相同token 通过userkey获取数据然后生成相同TOKEN
 		res, err := t.getToken(ctx, userKey)
-		if err != nil {
-			return "", err
+		if err == nil {
+			tokenRes, err := t.EncryptToken(ctx, userKey, res.Uuid)
+			if err == nil {
+				return tokenRes.Token, nil
+			}
 		}
-		tokenRes, err := t.EncryptToken(ctx, userKey, res.Uuid)
-		if err != nil {
-			return "", err
-		}
-		return tokenRes.Token, nil
+
 	}
 	res, err := t.EncryptToken(ctx, userKey, "")
 
