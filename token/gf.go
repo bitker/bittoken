@@ -12,11 +12,11 @@ import (
 )
 
 // 初始化参数
-func NewBittoken(keys string) *token {
+func NewBittoken(cacheKey string) *Token {
 	ctx := gctx.New()
-	return &token{
+	return &Token{
 		AuthExcludePaths: g.Cfg().MustGet(ctx, "BitToken.Exclude", "/login").Strings(),
-		CacheKey:         keys,
+		CacheKey:         cacheKey,
 		Timeout:          g.Cfg().MustGet(ctx, "BitToken.Timeout", "1000").Int(),
 		MaxRefresh:       g.Cfg().MustGet(ctx, "BitToken.Refresh", "1000").Int(),
 		EncryptKey:       g.Cfg().MustGet(ctx, "BitToken.EncryptKey").Bytes(),
@@ -24,7 +24,7 @@ func NewBittoken(keys string) *token {
 	}
 }
 
-func (t *token) ParsToken(r *ghttp.Request) (res *cacheRes, err error) {
+func (t *Token) ParsToken(r *ghttp.Request) (res *cacheRes, err error) {
 	authHeader := r.Header.Get("Authorization")
 	token := ""
 	if authHeader != "" {
@@ -49,7 +49,7 @@ func (t *token) ParsToken(r *ghttp.Request) (res *cacheRes, err error) {
 	return
 }
 
-func (m *token) AuthPath(ctx context.Context, urlPath string) bool {
+func (m *Token) AuthPath(ctx context.Context, urlPath string) bool {
 	// 去除后斜杠
 	if strings.HasSuffix(urlPath, "/") {
 		urlPath = gstr.SubStr(urlPath, 0, len(urlPath)-1)

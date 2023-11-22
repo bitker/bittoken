@@ -15,7 +15,7 @@ import (
 	"github.com/gogf/gf/v2/util/grand"
 )
 
-type token struct {
+type Token struct {
 	TokenDelimiter string
 
 	AuthExcludePaths []string //排除项
@@ -52,7 +52,7 @@ type decryptRes struct {
 }
 
 // 生成TOKEN
-func (t *token) Generate(ctx context.Context, userKey string, data interface{}) (token string, err error) {
+func (t *Token) Generate(ctx context.Context, userKey string, data interface{}) (token string, err error) {
 
 	if t.MultiLogin {
 		// 支持多端重复登录，返回相同token 通过userkey获取数据然后生成相同TOKEN
@@ -88,7 +88,7 @@ func (t *token) Generate(ctx context.Context, userKey string, data interface{}) 
 }
 
 // 加密返回token结构体
-func (t *token) EncryptToken(ctx context.Context, userKey string, uuid string) (Res *tokenRes, err error) {
+func (t *Token) EncryptToken(ctx context.Context, userKey string, uuid string) (Res *tokenRes, err error) {
 	if userKey == "" {
 		return
 	}
@@ -117,7 +117,7 @@ func (t *token) EncryptToken(ctx context.Context, userKey string, uuid string) (
 }
 
 // DecryptToken token解密方法
-func (m *token) DecryptToken(ctx context.Context, token string) (res *decryptRes, err error) {
+func (m *Token) DecryptToken(ctx context.Context, token string) (res *decryptRes, err error) {
 	if token == "" {
 		return
 	}
@@ -139,7 +139,7 @@ func (m *token) DecryptToken(ctx context.Context, token string) (res *decryptRes
 }
 
 // getToken 通过userKey获取Token
-func (t *token) getToken(ctx context.Context, userKey string) (res *cacheRes, err error) {
+func (t *Token) getToken(ctx context.Context, userKey string) (res *cacheRes, err error) {
 	cacheKey := t.CacheKey + userKey
 
 	userCacheResp, err := t.getCache(ctx, cacheKey)
@@ -163,7 +163,7 @@ func (t *token) getToken(ctx context.Context, userKey string) (res *cacheRes, er
 	return userCacheResp, nil
 }
 
-func (t *token) setCache(ctx context.Context, cacheKey string, userCache *cacheRes) error {
+func (t *Token) setCache(ctx context.Context, cacheKey string, userCache *cacheRes) error {
 	cacheValueJson, err := gjson.Encode(userCache)
 	if err != nil {
 		return err
@@ -174,7 +174,7 @@ func (t *token) setCache(ctx context.Context, cacheKey string, userCache *cacheR
 	}
 	return nil
 }
-func (t *token) getCache(ctx context.Context, cacheKey string) (res *cacheRes, err error) {
+func (t *Token) getCache(ctx context.Context, cacheKey string) (res *cacheRes, err error) {
 	userCacheJson, err := g.Redis().Do(ctx, "GET", cacheKey)
 	if err != nil {
 		return
@@ -188,7 +188,7 @@ func (t *token) getCache(ctx context.Context, cacheKey string) (res *cacheRes, e
 }
 
 // validToken 验证Token
-func (t *token) ValidToken(ctx context.Context, token string) (res *cacheRes, err error) {
+func (t *Token) ValidToken(ctx context.Context, token string) (res *cacheRes, err error) {
 	if token == "" {
 		err = gerror.New("token is empty")
 		return
