@@ -177,6 +177,15 @@ func (t *Token) setCache(ctx context.Context, cacheKey string, userCache *cacheR
 	}
 	return nil
 }
+
+// removeCache 删除缓存
+func (m *Token) removeCache(ctx context.Context, cacheKey string) error {
+
+	_, err := g.Redis().Do(ctx, "DEL", cacheKey)
+	return err
+
+}
+
 func (t *Token) getCache(ctx context.Context, cacheKey string) (res *cacheRes, err error) {
 	userCacheJson, err := g.Redis().Do(ctx, "GET", cacheKey)
 	if err != nil {
@@ -216,4 +225,15 @@ func (t *Token) ValidToken(ctx context.Context, token string) (res *cacheRes, er
 	}
 
 	return userCacheResp, nil
+}
+
+// RemoveToken 删除Token
+func (t *Token) RemoveToken(ctx context.Context, token string) error {
+	decryptToken, err := t.DecryptToken(ctx, token)
+	if err != nil {
+		return err
+	}
+
+	cacheKey := t.CacheKey + decryptToken.Key
+	return t.removeCache(ctx, cacheKey)
 }
