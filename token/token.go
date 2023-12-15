@@ -51,6 +51,10 @@ type decryptRes struct {
 	Uuid string
 }
 
+func (c *cacheRes) Get() (data interface{}) {
+	return c.Data
+}
+
 // 生成TOKEN
 func (t *Token) Generate(ctx context.Context, userKey string, data interface{}) (token string, err error) {
 
